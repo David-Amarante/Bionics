@@ -13,7 +13,9 @@ void loop() {
 
     for (int i = 0; i < 20; i++) {  // corrigido o for
         analogWrite(11, i*10);    // envia o valor para o pino 11
-        Serial.println("out");     // mostra o valor no Serial Monitor
+
+        Serial.println("out");   // mostra o valor no Serial Monitor
+        
         delay(100);                    // pequeno atraso para ver a mudança
     }
 }
