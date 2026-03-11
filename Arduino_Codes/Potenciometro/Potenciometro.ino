@@ -21,9 +21,13 @@ void setup()
 
 void loop()
 {  
-  valor = analogRead(potPin);     
-  delay(100);
+  valor = analogRead(potPin);    
+
+  Serial.println(valor); 
   
-  myservo.write((valor/1023)*360);
+  delay(100);
+
+  
+  myservo.write((valor-300)/(1023-300)*180);
   
 }
