@@ -1,19 +1,56 @@
 #include <Arduino.h>
+#include <Servo.h>
+
+Servo servo1;  
+int pos = 0;
+
+// Função simples para dividir string por "-" e retornar lista
+int splitString(String input, String parts[], int maxParts) {
+  int partCount = 0;
+  int start = 0;
+  int end = input.indexOf('-');
+  
+  while (end != -1 && partCount < maxParts - 1) {
+    parts[partCount++] = input.substring(start, end);
+    start = end + 1;
+    end = input.indexOf('-', start);
+  }
+
+  // Última parte
+  if (partCount < maxParts) {
+    parts[partCount++] = input.substring(start);
+  }
+
+  return partCount;
+}
 
 
-void setup() {
-  // put your setup code here, to run once:
-    pinMode(11,OUTPUT);
-    Serial.begin(9600);
 
+void setup() {  
+  // Attach the servo to pin 11
+  servo1.attach(11);
+  Serial.begin(9600);
+  pinMode(A0,INPUT);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  //Message Reader from Serial Port
+  if(Serial.available() > 0){
+    String input = Serial.readStringUntil('\n');
+    input.trim();
 
-    for (int i = 0; i < 20; i++) {  // corrigido o for
-        analogWrite(11, i*10);    // envia o valor para o pino 11
-        Serial.println("out");     // mostra o valor no Serial Monitor
-        delay(100);                    // pequeno atraso para ver a mudança
+    // Usar função simples para dividir por "-"
+    String parts[4]; // Lista para até 4 partes
+    int numParts = splitString(input, parts, 4);
+    
+    // Trim cada parte
+    for (int i = 0; i < numParts; i++) {
+      parts[i].trim();
     }
+
+    if (parts[0] == "UP") {
+     pos = servo1.read(); 
+     servo1.write(pos + parts[1].toInt());
+    }
+  }
 }
